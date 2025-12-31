@@ -59,8 +59,6 @@ return {
       },
       -- LSP Server Settings
       -- Sets the default configuration for an LSP client (or all clients if the special name "*" is used).
-      ---@alias lazyvim.lsp.Config vim.lsp.Config|{mason?:boolean, enabled?:boolean, keys?:LazyKeysLspSpec[]}
-      ---@type table<string, lazyvim.lsp.Config|boolean>
       servers = {
         -- configuration for all lsp servers
         ["*"] = {
@@ -75,11 +73,19 @@ return {
           -- stylua: ignore
           keys = {
             { "<leader>cl", function() Snacks.picker.lsp_config() end, desc = "Lsp Info" },
-            { "gd", vim.lsp.buf.definition, desc = "Goto Definition", has = "definition" },
-            { "gr", vim.lsp.buf.references, desc = "References", nowait = true },
-            { "gI", vim.lsp.buf.implementation, desc = "Goto Implementation" },
-            { "gy", vim.lsp.buf.type_definition, desc = "Goto T[y]pe Definition" },
-            { "gD", vim.lsp.buf.declaration, desc = "Goto Declaration" },
+            -- { "gd", vim.lsp.buf.definition, desc = "Goto Definition", has = "definition" },
+            -- { "gr", vim.lsp.buf.references, desc = "References", nowait = true },
+            -- { "gI", vim.lsp.buf.implementation, desc = "Goto Implementation" },
+            -- { "gy", vim.lsp.buf.type_definition, desc = "Goto T[y]pe Definition" },
+            { "gd", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition" },
+            { "gr", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
+            { "gI", function() Snacks.picker.lsp_implementations() end, desc = "Goto Implementation" },
+            { "gy", function() Snacks.picker.lsp_type_definitions() end, desc = "Goto T[y]pe Definition" },
+            { "gD", function() Snacks.picker.lsp_declarations() end, desc = "Goto Declaration" },
+            { "gai", function() Snacks.picker.lsp_incoming_calls() end, desc = "C[a]lls Incoming" },
+            { "gao", function() Snacks.picker.lsp_outgoing_calls() end, desc = "C[a]lls Outgoing" },
+            { "<leader>ss", function() Snacks.picker.lsp_symbols() end, desc = "LSP Symbols" },
+            { "<leader>sS", function() Snacks.picker.lsp_workspace_symbols() end, desc = "LSP Workspace Symbols" },
             { "K", function() return vim.lsp.buf.hover() end, desc = "Hover" },
             { "gK", function() return vim.lsp.buf.signature_help() end, desc = "Signature Help", has = "signatureHelp" },
             { "<c-k>", function() return vim.lsp.buf.signature_help() end, mode = "i", desc = "Signature Help", has = "signatureHelp" },
@@ -100,6 +106,8 @@ return {
           },
         },
         stylua = { enabled = false },
+        vue_ls = {},
+        vtsls = {},
         lua_ls = {
           -- mason = false, -- set to false if you don't want this server to be installed with mason
           -- Use this to add any additional keymaps
